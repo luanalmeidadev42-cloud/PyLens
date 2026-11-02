@@ -97,7 +97,7 @@ Os limites de memória e CPU são comparados com as amostras da árvore de proce
 
 ### Testes
 
-- `tests/test_executor.py`, `tests/test_models.py`, `tests/test_database.py` e `tests/test_classifier.py`: verificam partes do executor, modelos, persistência e classificador. A existência de testes não significa que eles foram executados nesta alteração.
+- `tests/`: suíte `pytest` para configurações e resultados, classificação, banco e migrações, execução e limites, profiling, CLI e menu guiado. Instale com `python -m pip install -e ".[test]"` e rode com `python -m pytest`.
 
 ## Histórico local
 
@@ -115,4 +115,4 @@ O padrão é `~/.pylens/history.sqlite3`. `--database` permite escolher outro ca
 - Um subprocesso separado não restringe as permissões do script.
 - `cProfile` mede funções Python, mas não detalha o trabalho interno de bibliotecas nativas.
 - A saída mostrada mantém apenas o último 1 MiB de cada fluxo (`stdout` e `stderr`).
-- No estado atual, `deep` não mede tempo por linha.
+- O modo `deep` mede linhas do script alvo; a instrumentação aumenta o overhead e inclui o tempo de chamadas iniciadas em cada linha.

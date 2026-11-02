@@ -11,12 +11,19 @@ requires-python = ">=3.9"
 license = { file = "LICENSE" }
 dependencies = ["psutil>=5.9"]
 
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
 [project.scripts]
 pylens = "pylens.interface:main"
 pylens-menu = "pylens.interface.interactive:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
 
 [tool.setuptools.package-data]
 pylens = ["database/*.sql"]

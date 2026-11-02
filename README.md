@@ -5,7 +5,7 @@ PyLens runs Python scripts in a separate process, samples resource usage, and st
 ## Install for development
 
 ```bash
-python -m pip install -e .
+python -m pip install -e ".[test]"
 ```
 
 ## Aprenda como o código funciona

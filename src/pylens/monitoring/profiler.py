@@ -54,8 +54,7 @@ def build_profile_command(
 
     command = [
         sys.executable,
-        "-m",
-        "pylens.monitoring.profiler",
+        str(Path(__file__).resolve()),
         "--mode",
         mode,
         "--function-output",
