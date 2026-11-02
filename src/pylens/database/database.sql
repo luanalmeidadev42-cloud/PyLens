@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS executions (
             'FAILED',
             'TIMEOUT',
             'MEMORY_LIMIT',
+            'CPU_LIMIT',
             'INTERRUPTED',
             'INTERNAL_ERROR'
         )),
