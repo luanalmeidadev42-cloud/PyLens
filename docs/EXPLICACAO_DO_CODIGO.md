@@ -65,6 +65,8 @@ Os limites de memória e CPU são comparados com as amostras da árvore de proce
 ### Interface de linha de comando
 
 - `src/pylens/interface/cli.py`: define argumentos e subcomandos, chama o executor, imprime resultados e converte o resultado em código de saída do PyLens. Também implementa a consulta e exclusão de execuções.
+- `src/pylens/interface/interactive.py`: oferece um menu guiado que coleta opções por perguntas e encaminha as ações aos mesmos handlers da CLI.
+- `src/pylens/interface/__main__.py`: permite abrir o menu guiado com `python -m pylens.interface`.
 - `src/pylens/__main__.py`: ponto de entrada para `python -m pylens`.
 - `src/pylens/__init__.py`: marca o diretório como pacote Python.
 
@@ -91,7 +93,7 @@ Os limites de memória e CPU são comparados com as amostras da árvore de proce
 ### Exemplo e interface antiga
 
 - `examples/sample_workload.py`: gera uma carga curta de CPU para experimentar a medição; limita a duração para no máximo 15 segundos.
-- `src/pylens/interface/`: contém a CLI usada tanto pelo comando instalado `pylens` quanto por `python -m pylens`. `src/pylens/cli.py` mantém um import de compatibilidade para código que usava o caminho anterior.
+- `src/pylens/interface/`: contém a CLI de comandos (`pylens`, `python -m pylens`) e o menu guiado (`pylens-menu`, `python -m pylens.interface`). As duas interfaces encaminham as ações para a mesma CLI.
 
 ### Testes
 

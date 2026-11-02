@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import os
 from pathlib import Path
-import pstats
 import subprocess
 import sqlite3
 import sys
@@ -324,29 +323,38 @@ def run_script(
                 )
 
         if settings.mode in ("detailed", "deep") and profile_temp is not None:
-            try:
-                profile_summary = format_profile_summary(
-                    settings.mode,
-                    profile_temp.name,
-                    line_profile_temp.name if line_profile_temp is not None else None,
-                )
-                repository.add_log(
-                    execution_id,
-                    level="INFO",
-                    event_type="PROFILE_SUMMARY",
-                    message="Function profile collected."
-                    if settings.mode == "detailed"
-                    else "Function and line profiles collected.",
-                    details={"summary": profile_summary},
-                )
-            except (OSError, pstats.StatsError, ValueError) as error:
+            if status in ("TIMEOUT", "MEMORY_LIMIT", "CPU_LIMIT", "INTERRUPTED"):
                 repository.add_log(
                     execution_id,
                     level="WARNING",
                     event_type="PROFILE_INCOMPLETE",
-                    message="Detailed profiling was unavailable; basic monitoring completed.",
-                    details={"error": str(error)},
+                    message="Profiling stopped before a complete profile could be saved.",
+                    details={"execution_status": status},
                 )
+            else:
+                try:
+                    profile_summary = format_profile_summary(
+                        settings.mode,
+                        profile_temp.name,
+                        line_profile_temp.name if line_profile_temp is not None else None,
+                    )
+                    repository.add_log(
+                        execution_id,
+                        level="INFO",
+                        event_type="PROFILE_SUMMARY",
+                        message="Function profile collected."
+                        if settings.mode == "detailed"
+                        else "Function and line profiles collected.",
+                        details={"summary": profile_summary},
+                    )
+                except (OSError, EOFError, ValueError, TypeError) as error:
+                    repository.add_log(
+                        execution_id,
+                        level="WARNING",
+                        event_type="PROFILE_INCOMPLETE",
+                        message="Profiling data was incomplete; resource monitoring completed.",
+                        details={"error": str(error)},
+                    )
     except KeyboardInterrupt:
         status = "INTERRUPTED"
         if process is not None and process.poll() is None:

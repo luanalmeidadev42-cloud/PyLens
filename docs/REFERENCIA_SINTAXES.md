@@ -10,6 +10,8 @@ pylens <comando> [opções]
 
 `pylens` inicia o programa, `<comando>` escolhe a operação e `[opções]` configura essa operação. Os colchetes indicam itens opcionais; eles não devem ser digitados literalmente. Os comandos disponíveis são `run`, `history`, `logs` e `delete`.
 
+Também há uma interface guiada: execute `pylens-menu` após instalar o projeto ou `PYTHONPATH=src python3 -m pylens.interface` no checkout. Ela pergunta os dados necessários e encaminha as operações para os mesmos comandos `run`, `history`, `logs` e `delete`.
+
 ## Executar um script: `run`
 
 ```text
@@ -191,4 +193,4 @@ Nas duas tabelas relacionadas, `FOREIGN KEY ... REFERENCES executions(id)` exige
 
 ## Menu interativo legado
 
-O pacote `src/pylens/interface/` contém a CLI principal do projeto. Tanto `pylens` quanto `python -m pylens` iniciam essa mesma interface e aceitam os comandos documentados acima.
+O pacote `src/pylens/interface/` contém as duas interfaces: `pylens` ou `python -m pylens` iniciam a CLI de comandos; `pylens-menu` ou `python -m pylens.interface` iniciam o menu guiado. Ambas oferecem execução, histórico, consulta de logs e exclusão.

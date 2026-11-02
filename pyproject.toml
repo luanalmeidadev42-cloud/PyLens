@@ -13,6 +13,7 @@ dependencies = ["psutil>=5.9"]
 
 [project.scripts]
 pylens = "pylens.interface:main"
+pylens-menu = "pylens.interface.interactive:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

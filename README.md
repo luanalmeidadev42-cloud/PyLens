@@ -20,6 +20,14 @@ A [Referência de sintaxes](docs/REFERENCIA_SINTAXES.md) explica os comandos da 
 pylens run path/to/script.py
 ```
 
+For a guided menu that asks for the script and settings instead of requiring command-line options, run:
+
+```bash
+pylens-menu
+```
+
+From a source checkout, run `PYTHONPATH=src python3 -m pylens.interface`. The menu provides the same run, history, logs, and delete actions as the command-line interface.
+
 Pass PyLens options before `--` and arguments for the target script after it:
 
 ```bash

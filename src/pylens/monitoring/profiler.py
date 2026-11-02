@@ -9,7 +9,6 @@ import linecache
 import os
 from pathlib import Path
 import pstats
-import runpy
 import sys
 import threading
 from threading import Lock
@@ -18,6 +17,25 @@ from typing import Optional, Sequence
 
 
 PROFILED_MODES = {"detailed", "deep"}
+
+
+def _prepare_script(script_path: str):
+    """Compile source with the globals and import path of a direct script run."""
+    script_path = os.path.abspath(script_path)
+    script_directory = os.path.dirname(script_path)
+    sys.path.insert(0, script_directory)
+    script_globals = {
+        "__name__": "__main__",
+        "__file__": script_path,
+        "__package__": None,
+        "__cached__": None,
+        "__loader__": None,
+        "__spec__": None,
+        "__builtins__": __builtins__,
+    }
+    with open(script_path, "rb") as source_file:
+        source = source_file.read()
+    return compile(source, script_path, "exec"), script_globals
 
 
 def build_profile_command(
@@ -87,7 +105,7 @@ def format_profile_summary(
     return "\n\n".join(output)
 
 
-def _line_profile(script_path: str, output_path: str) -> None:
+def _line_profile(script_path: str, output_path: str, code, script_globals) -> None:
     """Run the target with a line tracer and save target-file timings as JSON."""
     target_path = os.path.normcase(os.path.realpath(script_path))
     collected = defaultdict(lambda: {"hits": 0, "total_seconds": 0.0})
@@ -131,7 +149,7 @@ def _line_profile(script_path: str, output_path: str) -> None:
     threading.settrace(global_trace)
     sys.settrace(global_trace)
     try:
-        runpy.run_path(script_path, run_name="__main__")
+        exec(code, script_globals, script_globals)
     finally:
         threading.settrace(None)
         sys.settrace(previous_trace)
@@ -164,15 +182,16 @@ def _run_target(
 ) -> None:
     """Execute a target script under the selected profiler."""
     sys.argv = [script_path, *script_arguments]
+    code, script_globals = _prepare_script(script_path)
     profiler = cProfile.Profile()
     profiler.enable()
     try:
         if mode == "deep":
             if line_output_path is None:
                 raise ValueError("deep mode requires a line-profile output path")
-            _line_profile(script_path, line_output_path)
+            _line_profile(script_path, line_output_path, code, script_globals)
         else:
-            runpy.run_path(script_path, run_name="__main__")
+            exec(code, script_globals, script_globals)
     finally:
         profiler.disable()
         profiler.dump_stats(function_output_path)
